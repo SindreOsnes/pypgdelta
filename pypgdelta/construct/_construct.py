@@ -16,5 +16,11 @@ def construct_configuration(statements: List[Dict]) -> Dict:
         statements_list.extend(statement.get('stmts', []))
 
     schema_statements = [statement for statement in statements_list if 'CreateSchemaStmt' in statement.get('stmt', {})]
+    configuration = OrderedDict(
+        [
+            (statement['stmt']['CreateSchemaStmt']['schemaname'], OrderedDict())
+            for statement in schema_statements
+        ]
+    )
 
-    return schema_statements
+    return configuration
