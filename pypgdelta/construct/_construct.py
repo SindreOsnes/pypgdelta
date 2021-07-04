@@ -15,4 +15,6 @@ def construct_configuration(statements: List[Dict]) -> Dict:
     for statement in statements:
         statements_list.extend(statement.get('stmts', []))
 
-    return statements_list
+    schema_statements = [statement for statement in statements_list if 'CreateSchemaStmt' in statement.get('stmt', {})]
+
+    return schema_statements
