@@ -11,4 +11,8 @@ def construct_configuration(statements: List[Dict]) -> Dict:
     :rtype: Dict
     """
 
-    return OrderedDict()
+    statements_list = []
+    for statement in statements:
+        statements_list.extend(statement.get('stmts', []))
+
+    return statements_list
