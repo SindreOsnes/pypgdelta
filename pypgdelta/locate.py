@@ -1,6 +1,7 @@
+import json
 import os
 from os import DirEntry
-from typing import List
+from typing import List, Dict
 
 
 def find_json_files(root_dir) -> List[DirEntry]:
@@ -20,3 +21,21 @@ def find_json_files(root_dir) -> List[DirEntry]:
             if elem.name.endswith('.json'):
                 files.append(elem)
     return files
+
+
+def find_and_read_json(root_dir) -> List[Dict]:
+    """Function for locating and readinf json files in a directory
+
+    :param str root_dir: The directory to search
+
+    :return: List of directories
+    :rtype: List[DirEntry]
+    """
+
+    files = find_json_files(root_dir)
+    statements = []
+    for file in files:
+        with open(file, 'r') as f:
+            statements.append(json.load(f))
+
+    return statements
