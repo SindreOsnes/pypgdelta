@@ -20,6 +20,11 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
     delta['schema'] = OrderedDict()
     delta['schema']['new'] = [schema for schema in new_configuration if schema not in old_configuration]
 
+    # Table delta
+    delta['tables'] = OrderedDict()
+    delta['tables']['new'] = []
+    delta['tables']['alter'] = []
+
     return delta
 
 
