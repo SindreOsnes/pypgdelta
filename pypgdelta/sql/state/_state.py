@@ -2,6 +2,7 @@ import psycopg2
 from typing import Dict
 
 from ._schema import get_schemadict
+from ._table import get_table_dict
 
 
 def get_state(connection: psycopg2.extensions.connection) -> Dict:
@@ -12,6 +13,7 @@ def get_state(connection: psycopg2.extensions.connection) -> Dict:
     :return: Current database setup as a nested dictionary
     :rtype: Dict
     """
-    baseline = get_schemadict(connection)
+    configuration = get_schemadict(connection)
+    configuration.update(get_table_dict(connection))
 
-    return baseline
+    return configuration
