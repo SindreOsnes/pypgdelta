@@ -18,6 +18,25 @@ def create_table_config(statements: Iterable[Dict], baseline: Union[Dict, None] 
 
     baseline = deepcopy(baseline)
 
+    # Identify create table statements
     table_statements = [statement for statement in statements if 'CreateStmt' in statement.get('stmt', {})]
+
+    # Add each of the tables to the configuration
+    for statement in table_statements:
+
+        # Get the properties
+        table_statement =statement['stmt']['CreateStmt']
+        relation =table_statement['relation']
+        schema_name = relation['schemaname']
+        table_name = relation['relname']
+
+        # Create schema if not in the baseline
+        if schema_name not in baseline:
+            baseline[schema_name] = OrderedDict()
+
+        # Add the table to the configuration
+        table_configuration = OrderedDict
+        schema = baseline[schema_name]
+        schema[table_name] = table_configuration
 
     return baseline
