@@ -7,7 +7,7 @@ setup(
     url="https://github.com/SindreOsnes/pypgdelta",
     author='Sindre Osnes',
     author_email='sindre.osnes@gmail.com',
-    version='0.0.1',
+    version='0.0.2',
     include_package_data=True,
     packages=find_packages(exclude=['tests*']),
     install_requires=[

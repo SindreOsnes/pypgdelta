@@ -8,3 +8,7 @@ The module functions by comparing information extracted from postgres databases 
 
 ### 0.0.1
 - Add support for schema creation
+
+### 0.0.2
+- Add support for rudimentary table creation
+
