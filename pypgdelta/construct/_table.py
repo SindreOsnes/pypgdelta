@@ -4,7 +4,7 @@ from typing import Iterable, Dict, Union
 
 
 def create_table_config(statements: Iterable[Dict], baseline: Union[Dict, None] = None) -> Dict:
-    """Function for getting the baseline schema configuration based on create schema statements
+    """Function for getting the table configuration based on supplied table statements
 
     :param List[Dict] statements: The statements upon which to base the configuration
     :param Dict baseline: A baseline configuration upon which to add the table configurations
