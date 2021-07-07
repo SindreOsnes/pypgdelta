@@ -20,8 +20,8 @@ def create_column_config(column_def: Dict) -> Dict:
 
     # Set the appropriate type
     if col_type == ('pg_catalog', 'int8'):
-        column_config['type'] = 'bigint'
+        column_config['data_type'] = 'bigint'
 
-    if 'type' not in column_config:
+    if 'data_type' not in column_config:
         raise TypeError(f'Unable to handle column type {col_type}')
     return configuration
