@@ -34,7 +34,14 @@ def create_table_config(statements: Iterable[Dict], baseline: Union[Dict, None] 
 
         # Create schema if not in the baseline
         if schema_name not in baseline:
-            baseline[schema_name] = OrderedDict()
+            baseline[schema_name] = OrderedDict(
+                [
+                    (
+                        'tables',
+                        OrderedDict()
+                    )
+                ]
+            )
 
         # Add the table to the configuration
         # Schema
@@ -42,7 +49,7 @@ def create_table_config(statements: Iterable[Dict], baseline: Union[Dict, None] 
 
         # Table
         table_configuration = OrderedDict()
-        schema[table_name] = table_configuration
+        schema['tables'][table_name] = table_configuration
 
         # Column
         column_configurations = OrderedDict()
