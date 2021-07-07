@@ -15,7 +15,10 @@ def create_column_config(column_def: Dict) -> Dict:
     column_config = OrderedDict()
     configuration[column_def['colname']] = column_config
 
+    # Get the column udt type
     col_type = tuple([name['String']['str'] for name in column_def['typeName']['names']])
+
+    # Set the appropriate type
     if col_type == ('pg_catalog', 'int8'):
         column_config['type'] = 'bigint'
 
