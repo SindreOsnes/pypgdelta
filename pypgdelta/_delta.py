@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from copy import deepcopy
 from typing import Dict
 
 from .sql import statements
@@ -24,6 +25,24 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
     delta['tables'] = OrderedDict()
     delta['tables']['new'] = []
     delta['tables']['alter'] = []
+    for schema_name, schema_config in new_configuration.items():
+        schema_baseline = OrderedDict(
+            [
+                ('schema_name', schema_name)
+            ]
+        )
+        tables = schema_config.get('tables', {})
+
+        # Extract the table definitions
+        for table_name, table_config in tables.items():
+            table_baseline = deepcopy(schema_baseline)
+            table_baseline['table_name'] = table_name
+            column_definitions = table_config.get('columns', {})
+            table_baseline['column_definitions'] = column_definitions
+
+            # Add the table definition if missing
+            if not old_configuration.get(schema_name, {}).get('tables', {}).get(table_name):
+                delta['tables']['new'].append(table_baseline)
 
     return delta
 
