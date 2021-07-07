@@ -13,7 +13,7 @@ def get_sql_tables_and_views(connection: psycopg2.extensions.connection) -> List
     :rtype: List[psycopg2.extras.RealDictRow]
     """
     with connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
-        query = """SELECT t.table_schema,
+        query = """select t.table_schema,
                           t.table_name,
                           t.table_type,
                           c.column_name,
