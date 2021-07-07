@@ -44,6 +44,8 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
             if not old_configuration.get(schema_name, {}).get('tables', {}).get(table_name):
                 delta['tables']['new'].append(table_baseline)
 
+            # TODO: Add support for alter statements
+
     return delta
 
 
