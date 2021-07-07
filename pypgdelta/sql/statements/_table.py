@@ -26,6 +26,6 @@ def create_table(schema_name: str, table_name: str, column_definitions: Dict) ->
     )
 
     # Create the table statement based on the column
-    table_statement = f"create table {schema_name}.{table_name} (\n\t{column_statements}\n)"
+    table_statement = f"CREATE TABLE {schema_name}.{table_name} (\n\t{column_statements}\n)"
 
     return table_statement
