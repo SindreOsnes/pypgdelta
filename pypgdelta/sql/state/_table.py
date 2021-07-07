@@ -34,11 +34,11 @@ def get_table_dict(connection: psycopg2.extensions.connection) -> Dict:
 
     configuration = OrderedDict()
     table_information = get_sql_tables_and_views(connection)
-    for table in table_information:
+    for table_col in table_information:
 
         # Instantiate the schema object
-        if table['table_schema'] not in configuration:
-            configuration[table['table_schema']] = OrderedDict(
+        if table_col['table_schema'] not in configuration:
+            configuration[table_col['table_schema']] = OrderedDict(
                 [
                     ('tables', OrderedDict()),
                     ('views', OrderedDict())
@@ -46,22 +46,41 @@ def get_table_dict(connection: psycopg2.extensions.connection) -> Dict:
             )
 
         # Limit operations to selected table/view definition
-        schema_definition = configuration[table['table_schema']]
-        if table['table_type'] == 'BASE TABLE':
-            if table['table_name'] not in schema_definition['tables']:
-                schema_definition['tables'][table['table_name']] = OrderedDict(
+        schema_definition = configuration[table_col['table_schema']]
+        if table_col['table_type'] == 'BASE TABLE':
+            if table_col['table_name'] not in schema_definition['tables']:
+                schema_definition['tables'][table_col['table_name']] = OrderedDict(
                     [
                         ('columns', OrderedDict())
                     ]
                 )
-            table_definition = schema_definition['tables'][table['table_name']]
+            table_definition = schema_definition['tables'][table_col['table_name']]
         else:
-            if table['table_name'] not in schema_definition['tables']:
-                schema_definition['views'][table['table_name']] = OrderedDict(
+            if table_col['table_name'] not in schema_definition['tables']:
+                schema_definition['views'][table_col['table_name']] = OrderedDict(
                     [
                         ('columns', OrderedDict())
                     ]
                 )
-            table_definition = schema_definition['views'][table['table_name']]
+            table_definition = schema_definition['views'][table_col['table_name']]
+
+        table_definition['columns'].update(_generate_column_definitions(table_col))
 
     return configuration
+
+
+def _generate_column_definitions(column_definition: psycopg2.extras.RealDictRow) -> Dict:
+    """Function for generating the column definition object
+
+    :param psycopg2.extras.RealDictRow column_definition: The column definition from the database
+
+    :return: The column setup as a dict
+    :rtype: Dict
+    """
+
+    column_setup = OrderedDict()
+    column_information = OrderedDict()
+    column_setup[column_definition['column_name']] = column_information
+    column_information['data_type'] = column_definition['data_type']
+
+    return column_setup
