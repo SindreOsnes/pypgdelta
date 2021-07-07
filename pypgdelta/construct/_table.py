@@ -2,6 +2,8 @@ from collections import OrderedDict
 from copy import deepcopy
 from typing import Iterable, Dict, Union
 
+from ._column import create_column_config
+
 
 def create_table_config(statements: Iterable[Dict], baseline: Union[Dict, None] = None) -> Dict:
     """Function for getting the table configuration based on supplied table statements
@@ -35,8 +37,21 @@ def create_table_config(statements: Iterable[Dict], baseline: Union[Dict, None] 
             baseline[schema_name] = OrderedDict()
 
         # Add the table to the configuration
-        table_configuration = OrderedDict
+        # Schema
         schema = baseline[schema_name]
+
+        # Table
+        table_configuration = OrderedDict()
         schema[table_name] = table_configuration
+
+        # Column
+        column_configurations = OrderedDict()
+        table_configuration['columns'] = column_configurations
+
+        # Set the column configurations
+        for element in table_statement.get('tableElts', []):
+            if 'ColumnDef' in element:
+                column_configuration = create_column_config(element['ColumnDef'])
+                column_configurations.update(column_configuration)
 
     return baseline
