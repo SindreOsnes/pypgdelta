@@ -39,4 +39,4 @@ def get_delta_statement(old_configuration: Dict, new_configuration: Dict) -> str
     for schema in delta['schema']['new']:
         statement_list.append(statements.create_schema(schema))
 
-    return ';\n\n'.join(statement_list)
+    return ';\n\n'.join(statement_list) + ';'
