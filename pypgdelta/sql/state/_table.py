@@ -35,6 +35,8 @@ def get_table_dict(connection: psycopg2.extensions.connection) -> Dict:
     configuration = OrderedDict()
     table_information = get_sql_tables_and_views(connection)
     for table in table_information:
+
+        # Instantiate the schema object
         if table['table_schema'] not in configuration:
             configuration[table['table_schema']] = OrderedDict(
                 [
@@ -42,17 +44,24 @@ def get_table_dict(connection: psycopg2.extensions.connection) -> Dict:
                     ('views', OrderedDict())
                 ]
             )
+
+        # Limit operations to selected table/view definition
+        schema_definition = configuration[table['table_schema']]
         if table['table_type'] == 'BASE TABLE':
-            configuration[table['table_schema']]['tables'][table['table_name']] = OrderedDict(
-                [
-                    ('columns', OrderedDict())
-                ]
-            )
-        elif table['table_type'] == 'VIEW':
-            configuration[table['table_schema']]['views'][table['table_name']] = OrderedDict(
-                [
-                    ('columns', OrderedDict())
-                ]
-            )
+            if table['table_name'] not in schema_definition['tables']:
+                schema_definition['tables'][table['table_name']] = OrderedDict(
+                    [
+                        ('columns', OrderedDict())
+                    ]
+                )
+            table_definition = schema_definition['tables'][table['table_name']]
+        else:
+            if table['table_name'] not in schema_definition['tables']:
+                schema_definition['views'][table['table_name']] = OrderedDict(
+                    [
+                        ('columns', OrderedDict())
+                    ]
+                )
+            table_definition = schema_definition['views'][table['table_name']]
 
     return configuration
