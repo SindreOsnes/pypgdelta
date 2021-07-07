@@ -2,6 +2,7 @@ from collections import OrderedDict
 from typing import List, Dict
 
 from ._schema import create_schema_baseline
+from ._table import create_table_config
 
 
 def construct_configuration(statements: List[Dict]) -> Dict:
@@ -17,6 +18,7 @@ def construct_configuration(statements: List[Dict]) -> Dict:
     for statement in statements:
         statements_list.extend(statement.get('stmts', []))
 
-    baseline = create_schema_baseline(statements_list)
+    configuration = create_schema_baseline(statements_list)
+    configuration = create_table_config(statements_list, configuration)
 
-    return baseline
+    return configuration
