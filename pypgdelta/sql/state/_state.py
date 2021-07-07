@@ -1,7 +1,7 @@
 import psycopg2
 from typing import Dict
 
-from .schema import get_schemadict
+from ._schema import get_schemadict
 
 
 def get_state(connection: psycopg2.extensions.connection) -> Dict:
