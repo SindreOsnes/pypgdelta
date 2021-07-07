@@ -65,4 +65,13 @@ def get_delta_statement(old_configuration: Dict, new_configuration: Dict) -> str
     for schema in delta['schema']['new']:
         statement_list.append(statements.create_schema(schema))
 
+    for table in delta['tables']['new']:
+        statement_list.append(
+            statements.create_table(
+                schema_name=table['schema_name'],
+                table_name=table['table_name'],
+                column_definitions=table['column_definitions']
+            )
+        )
+
     return ';\n\n'.join(statement_list) + ';'
