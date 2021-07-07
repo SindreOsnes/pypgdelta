@@ -15,4 +15,10 @@ def create_column_config(column_def: Dict) -> Dict:
     column_config = OrderedDict()
     configuration[column_def['colname']] = column_config
 
+    col_type = tuple([name['String']['str'] for name in column_def['typeName']['names']])
+    if col_type == ('pg_catalog', 'int8'):
+        column_config['type'] = 'bigint'
+
+    if 'type' not in column_config:
+        raise TypeError(f'Unable to handle column type {col_type}')
     return configuration
