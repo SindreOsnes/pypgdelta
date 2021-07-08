@@ -61,7 +61,7 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
                 )
 
                 if new_columns:
-                    table_baseline['new_columns'] = new_columns
+                    table_baseline['new_column_definitions'] = new_columns
                     alter = True
 
                 # Set the alter statements if needed
@@ -94,6 +94,18 @@ def get_delta_statement(old_configuration: Dict, new_configuration: Dict) -> str
                 schema_name=table['schema_name'],
                 table_name=table['table_name'],
                 column_definitions=table['column_definitions']
+            )
+        )
+
+    # Add the alter table statements
+    for table in delta['tables']['alter']:
+        statement_list.append(
+            statements.alter_table(
+                schema_name=table['schema_name'],
+                table_name=table['table_name'],
+                new_column_definitions=table.get('new_column_definitions', {}),
+                alter_column_definitions=table.get('alter_column_definitions', {}),
+                delete_column_definitions=table.get('delete_column_definitions', {})
             )
         )
 
