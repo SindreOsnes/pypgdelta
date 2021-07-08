@@ -48,9 +48,9 @@ def alter_table(schema_name: str, table_name: str,
     """
 
     # create the columns
-    new_column_statements = ',\n\t'.join(
+    new_column_statements = ',\n'.join(
         [
-            create_column_statement(
+            'ADD COLUMN ' + create_column_statement(
                 name=name,
                 data_type=properties['data_type']
             )
