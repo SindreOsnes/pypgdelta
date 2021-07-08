@@ -94,7 +94,7 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
                 # Set the alter statements if needed
                 if alter:
                     delta['tables']['alter'].append(table_baseline)
-                # TODO: Add support for alter statements
+                # TODO: Add support for constraints
 
     return delta
 
