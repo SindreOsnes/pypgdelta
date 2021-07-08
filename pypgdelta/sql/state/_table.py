@@ -17,7 +17,8 @@ def get_sql_tables_and_views(connection: psycopg2.extensions.connection) -> List
                           t.table_name,
                           t.table_type,
                           c.column_name,
-                          c.data_type
+                          c.data_type,
+                          c.is_nullable
                    FROM information_schema.columns c
                    INNER JOIN information_schema.tables t
                    ON t.table_schema = c.table_schema AND t.table_name = c.table_name"""
