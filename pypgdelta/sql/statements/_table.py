@@ -71,6 +71,13 @@ def alter_table(schema_name: str, table_name: str,
         ]
     )
 
+    delete_column_statements = ',\n'.join(
+        [
+            f"DROP COLUMN {name}"
+            for name, properties in delete_column_definitions.items()
+        ]
+    )
+
     table_statement = ''
 
     if new_column_definitions:
@@ -85,4 +92,13 @@ def alter_table(schema_name: str, table_name: str,
             table_statement += ';\n\n'
 
         table_statement += f"ALTER TABLE {schema_name}.{table_name} \n{alter_column_statements}"
+
+    # Create the delete column statements
+    if delete_column_definitions:
+
+        # Set the column deletions to be a separate command
+        if table_statement:
+            table_statement += ';\n\n'
+
+        table_statement += f"ALTER TABLE {schema_name}.{table_name} \n{delete_column_statements}"
     return table_statement
