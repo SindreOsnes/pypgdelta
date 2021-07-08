@@ -38,13 +38,36 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
             table_baseline = deepcopy(schema_baseline)
             table_baseline['table_name'] = table_name
             column_definitions = table_config.get('columns', {})
-            table_baseline['column_definitions'] = column_definitions
 
             # Add the table definition if missing
-            if not old_configuration.get(schema_name, {}).get('tables', {}).get(table_name):
+            existing_definition = old_configuration.get(schema_name, {}).get('tables', {}).get(table_name)
+            if not existing_definition:
+                table_baseline['column_definitions'] = column_definitions
                 delta['tables']['new'].append(table_baseline)
 
-            # TODO: Add support for alter statements
+            # Get the altered state if any
+            else:
+                alter = False
+                existing_columns = existing_definition.get('columns', {})
+
+                # Get any new column definitions
+                new_columns = OrderedDict(
+                    [
+                        (k, v)
+                        for k, v
+                        in column_definitions.items()
+                        if k not in existing_columns
+                    ]
+                )
+
+                if new_columns:
+                    table_baseline['new_columns'] = new_columns
+                    alter = True
+
+                # Set the alter statements if needed
+                if alter:
+                    delta['tables']['alter'].append(table_baseline)
+                # TODO: Add support for alter statements
 
     return delta
 
