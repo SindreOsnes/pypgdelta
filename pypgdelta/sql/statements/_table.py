@@ -1,6 +1,6 @@
 from typing import Dict
 
-from ._column import create_column_statement
+from ._column import alter_column_statement, create_column_statement
 
 
 def create_table(schema_name: str, table_name: str, column_definitions: Dict) -> str:
@@ -52,9 +52,21 @@ def alter_table(schema_name: str, table_name: str,
         [
             'ADD COLUMN ' + create_column_statement(
                 name=name,
-                data_type=properties['data_type']
+                data_type=properties['data_type'],
+                nullable=properties['nullable']
             )
             for name, properties in new_column_definitions.items()
+        ]
+    )
+
+    alter_column_definitions = ',\n'.join(
+        [
+            alter_column_statement(
+                name=name,
+                data_type=properties['data_type'],
+                nullable=properties['nullable']
+            )
+            for name, properties in alter_column_definitions.items()
         ]
     )
 
@@ -64,4 +76,6 @@ def alter_table(schema_name: str, table_name: str,
         # Create the table statement based on the column
         table_statement = f"ALTER TABLE {schema_name}.{table_name} \n{new_column_statements}"
 
+    if alter_column_definitions:
+        pass
     return table_statement
