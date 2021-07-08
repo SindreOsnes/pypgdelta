@@ -26,7 +26,7 @@ def create_column_config(column_def: Dict) -> Dict:
     column_config['nullable'] = True
     for constraint in column_def.get('constraints', []):
         if constraint.get('Constraint', {}).get('contype', None) == "CONSTR_NOTNULL":
-            column_config['nullable'] = True
+            column_config['nullable'] = False
 
     if 'data_type' not in column_config:
         raise TypeError(f'Unable to handle column type {col_type}')
