@@ -97,4 +97,7 @@ def get_delta_statement(old_configuration: Dict, new_configuration: Dict) -> str
             )
         )
 
-    return ';\n\n'.join(statement_list) + ';'
+    if statement_list:
+        return ';\n\n'.join(statement_list) + ';'
+
+    return ''
