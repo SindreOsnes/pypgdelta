@@ -87,5 +87,6 @@ def _generate_column_definitions(column_definition: psycopg2.extras.RealDictRow)
     column_information = OrderedDict()
     column_setup[column_definition['column_name']] = column_information
     column_information['data_type'] = column_definition['data_type']
+    column_information['nullable'] = column_definition['is_nullable'] == 'YES'
 
     return column_setup
