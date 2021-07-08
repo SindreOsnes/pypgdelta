@@ -58,7 +58,10 @@ def alter_table(schema_name: str, table_name: str,
         ]
     )
 
-    # Create the table statement based on the column
-    table_statement = f"ALTER TABLE {schema_name}.{table_name} \n{new_column_statements}"
+    table_statement = ''
+
+    if new_column_definitions:
+        # Create the table statement based on the column
+        table_statement = f"ALTER TABLE {schema_name}.{table_name} \n{new_column_statements}"
 
     return table_statement
