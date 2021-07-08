@@ -64,6 +64,20 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
                     table_baseline['new_column_definitions'] = new_columns
                     alter = True
 
+                # Get updated columns
+                alter_columns = OrderedDict(
+                    [
+                        (k, v)
+                        for k, v
+                        in column_definitions.items()
+                        if not v == existing_columns.get(k, {})
+                    ]
+                )
+
+                if alter_columns:
+                    table_baseline['alter_column_definitions'] = alter_columns
+                    alter = True
+
                 # Set the alter statements if needed
                 if alter:
                     delta['tables']['alter'].append(table_baseline)
