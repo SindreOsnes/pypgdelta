@@ -29,7 +29,7 @@ def alter_column_statement(name: str, data_type: str, nullable: bool, **kwargs) 
     :rtype: str
     """
 
-    col_str = f"ALTER COLUMN {name} TYPe {data_type}"
+    col_str = f"ALTER COLUMN {name} TYPE {data_type}"
     if not nullable:
         col_str += ',\n'
         col_str += f"ALTER COLUMN {name} SET NOT NULL"

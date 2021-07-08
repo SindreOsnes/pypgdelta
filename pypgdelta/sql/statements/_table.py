@@ -19,7 +19,8 @@ def create_table(schema_name: str, table_name: str, column_definitions: Dict) ->
         [
             create_column_statement(
                 name=name,
-                data_type=properties['data_type']
+                data_type=properties['data_type'],
+                nullable=properties['nullable']
             )
             for name, properties in column_definitions.items()
         ]
@@ -35,7 +36,7 @@ def alter_table(schema_name: str, table_name: str,
                 new_column_definitions: Dict,
                 alter_column_definitions: Dict,
                 delete_column_definitions: Dict) -> str:
-    """Function for generating a create table statement
+    """Function for generating an alter table statement
 
     :param str schema_name: The name of the schema that the table belongs to
     :param str table_name: The name of the table in question
@@ -59,7 +60,7 @@ def alter_table(schema_name: str, table_name: str,
         ]
     )
 
-    alter_column_definitions = ',\n'.join(
+    alter_column_statements = ',\n'.join(
         [
             alter_column_statement(
                 name=name,
@@ -73,9 +74,15 @@ def alter_table(schema_name: str, table_name: str,
     table_statement = ''
 
     if new_column_definitions:
-        # Create the table statement based on the column
+        # Create the alter table statement based on the columns
         table_statement = f"ALTER TABLE {schema_name}.{table_name} \n{new_column_statements}"
 
+    # Create the alter column statements
     if alter_column_definitions:
-        pass
+
+        # Set the column alterations to be a separate command
+        if table_statement:
+            table_statement += ';\n\n'
+
+        table_statement += f"ALTER TABLE {schema_name}.{table_name} \n{alter_column_statements}"
     return table_statement
