@@ -78,6 +78,19 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
                     table_baseline['alter_column_definitions'] = alter_columns
                     alter = True
 
+                # Get the columns to delete
+                delete_columns = OrderedDict(
+                    [
+                        (k, v)
+                        for k, v
+                        in existing_columns.items()
+                        if k not in column_definitions
+                    ]
+                )
+                if delete_columns:
+                    table_baseline['delete_column_definitions'] = delete_columns
+                    alter = True
+
                 # Set the alter statements if needed
                 if alter:
                     delta['tables']['alter'].append(table_baseline)
