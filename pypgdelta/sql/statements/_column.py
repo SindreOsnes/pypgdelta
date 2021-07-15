@@ -61,9 +61,6 @@ def alter_column_statement(name: str,
                 nullable = False
 
     col_str = f"ALTER COLUMN {name} TYPE {data_type}"
-    if pk:
-        col_str += " PRIMARY KEY"
-        return col_str
     col_str += ',\n'
     if not nullable:
         col_str += f"ALTER COLUMN {name} SET NOT NULL"
