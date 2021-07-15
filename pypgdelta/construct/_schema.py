@@ -14,7 +14,16 @@ def create_schema_baseline(statements: Iterable[Dict]) -> Dict:
     schema_statements = [statement for statement in statements if 'CreateSchemaStmt' in statement.get('stmt', {})]
     configuration = OrderedDict(
         [
-            (statement['stmt']['CreateSchemaStmt']['schemaname'], OrderedDict())
+            (
+                statement['stmt']['CreateSchemaStmt']['schemaname'], OrderedDict(
+                    [
+                        (
+                            'tables',
+                            OrderedDict()
+                        )
+                    ]
+                )
+            )
             for statement in schema_statements
         ]
     )
