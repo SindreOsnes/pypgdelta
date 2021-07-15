@@ -28,7 +28,7 @@ def create_column_config(column_def: Dict) -> Dict:
     # Deal with varchar
     elif col_type == ('pg_catalog', 'varchar'):
         column_config['data_type'] = 'character varying'
-        column_config['data_typ_stmt'] = f'varchar'
+        column_config['data_type_stmt'] = f'varchar'
 
         # Determine the maximum character length
         max_length = None
