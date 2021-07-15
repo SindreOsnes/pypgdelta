@@ -91,4 +91,16 @@ def _generate_column_definitions(column_definition: psycopg2.extras.RealDictRow)
     column_information['character_maximum_length'] = column_definition['character_maximum_length']
     column_information['nullable'] = column_definition['is_nullable'] == 'YES'
 
+    # Set the data type statement
+    if column_information['data_type'] == 'bigint':
+        column_information['data_type_stmt'] = "bigint"
+
+    elif column_information['data_type'] == 'character varying':
+        if column_information['character_maximum_length'] is not None:
+            column_information['data_type_stmt'] = f"varchar({column_information['character_maximum_length']})"
+        else:
+            column_information['data_type_stmt'] = f"varchar"
+    else:
+        column_information['data_type_stmt'] = None
+
     return column_setup

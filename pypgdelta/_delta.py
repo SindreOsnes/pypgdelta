@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from copy import deepcopy
-from typing import Dict
+from typing import Dict, List
 
 from .sql import statements
 
@@ -70,7 +70,16 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
                         (k, v)
                         for k, v
                         in column_definitions.items()
-                        if not v == existing_columns.get(k, {})
+                        if not _compare_dict(
+                            v,
+                            existing_columns.get(k, {}),
+                            [
+                                'data_type',
+                                'character_maximum_length',
+                                'nullable',
+                                'data_type_stmt'
+                            ]
+                        )
                     ]
                 )
 
@@ -140,3 +149,25 @@ def get_delta_statement(old_configuration: Dict, new_configuration: Dict) -> str
         return ';\n\n'.join(statement_list) + ';'
 
     return ''
+
+
+def _compare_dict(old: Dict, new: Dict, keys: List[str]) -> bool:
+    """Function for comparing a flat dictionary across specified keys
+
+    :param Dict old: baseline dict
+    :param Dict new: comparative dict
+    :param List[str] keys: The keys to compare
+
+    :return: Whether the dicts are equal for all keys
+    :rtype: bool
+    """
+    # keys =
+
+    try:
+        for key in keys:
+            if new[key] != old[key]:
+                return False
+    except:
+        return False
+
+    return True
