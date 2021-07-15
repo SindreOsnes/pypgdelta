@@ -23,11 +23,24 @@ def create_column_config(column_def: Dict) -> Dict:
         column_config['data_type'] = 'bigint'
         column_config['data_type_stmt'] = 'bigint'
         column_config['data_length'] = 'bigint'
+        column_config['character_maximum_length'] = None
 
     # Deal with varchar
     elif col_type == ('pg_catalog', 'varchar'):
-        column_config['data_type'] = 'varchar'
-        column_config['data_typ_stmt'] = 'varchar()'
+        column_config['data_type'] = 'character varying'
+        column_config['data_typ_stmt'] = f'varchar'
+
+        # Determine the maximum character length
+        max_length = None
+        for type_mod in column_def['typeName']['typmods']:
+            if 'A_Const' in type_mod:
+                max_length = type_mod['A_Const'].get('val', {}).get('integer', {}).get('ival', None)
+                break
+
+        if max_length is not None:
+            column_config['data_typ_stmt'] = f'varchar({max_length})'
+
+        column_config['character_maximum_length'] = max_length
 
     # Check nullability
     column_config['nullable'] = True
