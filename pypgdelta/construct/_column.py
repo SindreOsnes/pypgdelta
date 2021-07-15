@@ -59,7 +59,6 @@ def create_column_config(column_def: Dict) -> Dict:
             ('primary_key', False)
         ]
     )
-    column_config['primary_key'] = False
     for constraint in column_def.get('constraints', []):
         if constraint.get('Constraint', {}).get('contype', None) == "CONSTR_PRIMARY":
             column_config['constraints']['primary_key'] = True
