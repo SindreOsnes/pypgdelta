@@ -54,7 +54,8 @@ def alter_table(schema_name: str, table_name: str,
             'ADD COLUMN ' + create_column_statement(
                 name=name,
                 data_type=properties['data_type_stmt'],
-                nullable=properties['nullable']
+                nullable=properties['nullable'],
+                constraints=properties.get('constraints', [])
             )
             for name, properties in new_column_definitions.items()
         ]
@@ -65,7 +66,8 @@ def alter_table(schema_name: str, table_name: str,
             alter_column_statement(
                 name=name,
                 data_type=properties['data_type_stmt'],
-                nullable=properties['nullable']
+                nullable=properties['nullable'],
+                constraints=properties.get('constraints', [])
             )
             for name, properties in alter_column_definitions.items()
         ]
