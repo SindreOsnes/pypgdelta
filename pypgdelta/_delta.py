@@ -70,16 +70,22 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
                         (k, v)
                         for k, v
                         in column_definitions.items()
-                        if k in existing_columns and not _compare_dict(
-                        v,
-                        existing_columns.get(k, {}),
-                        [
-                            'data_type',
-                            'character_maximum_length',
-                            'nullable',
-                            'data_type_stmt'
-                        ]
-                    )
+                        if k in existing_columns and (
+                            not _compare_dict(
+                                v,
+                                existing_columns.get(k, {}),
+                                [
+                                    'data_type',
+                                    'character_maximum_length',
+                                    'nullable',
+                                    'data_type_stmt'
+                                ]
+                            )
+                            or _check_constraints(
+                                existing_columns.get(k, {}).get('constraints', []),
+                                v.get('constraints', [])
+                            )
+                        )
                     ]
                 )
 
