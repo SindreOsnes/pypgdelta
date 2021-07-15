@@ -22,7 +22,6 @@ def create_column_config(column_def: Dict) -> Dict:
     if col_type == ('pg_catalog', 'int8'):
         column_config['data_type'] = 'bigint'
         column_config['data_type_stmt'] = 'bigint'
-        column_config['data_length'] = 'bigint'
         column_config['character_maximum_length'] = None
 
     # Deal with varchar
@@ -42,11 +41,28 @@ def create_column_config(column_def: Dict) -> Dict:
 
         column_config['character_maximum_length'] = max_length
 
+    # Deal with uuid columns
+    if col_type == ('uuid', ):
+        column_config['data_type'] = 'uuid'
+        column_config['data_type_stmt'] = 'uuid'
+        column_config['character_maximum_length'] = None
+
     # Check nullability
     column_config['nullable'] = True
     for constraint in column_def.get('constraints', []):
         if constraint.get('Constraint', {}).get('contype', None) == "CONSTR_NOTNULL":
             column_config['nullable'] = False
+
+    # Check primary key status
+    column_config['constraints'] = OrderedDict(
+        [
+            ('primary_key', False)
+        ]
+    )
+    column_config['primary_key'] = False
+    for constraint in column_def.get('constraints', []):
+        if constraint.get('Constraint', {}).get('contype', None) == "CONSTR_PRIMARY":
+            column_config['constraints']['primary_key'] = True
 
     if 'data_type' not in column_config:
         raise TypeError(f'Unable to handle column type {col_type}')
