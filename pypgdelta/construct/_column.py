@@ -32,9 +32,9 @@ def create_column_config(column_def: Dict) -> Dict:
 
         # Determine the maximum character length
         max_length = None
-        for type_mod in column_def['typeName']['typmods']:
+        for type_mod in column_def['typeName'].get('typmods', []):
             if 'A_Const' in type_mod:
-                max_length = type_mod['A_Const'].get('val', {}).get('integer', {}).get('ival', None)
+                max_length = type_mod['A_Const'].get('val', {}).get('Integer', {}).get('ival', None)
                 break
 
         if max_length is not None:
