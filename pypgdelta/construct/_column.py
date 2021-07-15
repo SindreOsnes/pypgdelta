@@ -21,6 +21,13 @@ def create_column_config(column_def: Dict) -> Dict:
     # Set the appropriate type
     if col_type == ('pg_catalog', 'int8'):
         column_config['data_type'] = 'bigint'
+        column_config['data_type_stmt'] = 'bigint'
+        column_config['data_length'] = 'bigint'
+
+    # Deal with varchar
+    elif col_type == ('pg_catalog', 'varchar'):
+        column_config['data_type'] = 'varchar'
+        column_config['data_typ_stmt'] = 'varchar()'
 
     # Check nullability
     column_config['nullable'] = True
