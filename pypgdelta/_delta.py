@@ -70,7 +70,7 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
                         (k, v)
                         for k, v
                         in column_definitions.items()
-                        if not _compare_dict(
+                        if k in existing_columns and not _compare_dict(
                             v,
                             existing_columns.get(k, {}),
                             [
