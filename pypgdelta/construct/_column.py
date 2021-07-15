@@ -38,7 +38,7 @@ def create_column_config(column_def: Dict) -> Dict:
                 break
 
         if max_length is not None:
-            column_config['data_typ_stmt'] = f'varchar({max_length})'
+            column_config['data_type_stmt'] = f'varchar({max_length})'
 
         column_config['character_maximum_length'] = max_length
 
