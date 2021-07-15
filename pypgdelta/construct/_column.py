@@ -54,14 +54,14 @@ def create_column_config(column_def: Dict) -> Dict:
             column_config['nullable'] = False
 
     # Check primary key status
-    column_config['constraints'] = OrderedDict(
-        [
-            ('primary_key', False)
-        ]
-    )
+    column_config['constraints'] = []
     for constraint in column_def.get('constraints', []):
         if constraint.get('Constraint', {}).get('contype', None) == "CONSTR_PRIMARY":
-            column_config['constraints']['primary_key'] = True
+            column_config['constraints'].append(
+                {
+                    'type': 'p'
+                }
+            )
 
     if 'data_type' not in column_config:
         raise TypeError(f'Unable to handle column type {col_type}')
