@@ -71,15 +71,15 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
                         for k, v
                         in column_definitions.items()
                         if k in existing_columns and not _compare_dict(
-                            v,
-                            existing_columns.get(k, {}),
-                            [
-                                'data_type',
-                                'character_maximum_length',
-                                'nullable',
-                                'data_type_stmt'
-                            ]
-                        )
+                        v,
+                        existing_columns.get(k, {}),
+                        [
+                            'data_type',
+                            'character_maximum_length',
+                            'nullable',
+                            'data_type_stmt'
+                        ]
+                    )
                     ]
                 )
 
@@ -161,7 +161,6 @@ def _compare_dict(old: Dict, new: Dict, keys: List[str]) -> bool:
     :return: Whether the dicts are equal for all keys
     :rtype: bool
     """
-    # keys =
 
     try:
         for key in keys:
@@ -171,3 +170,28 @@ def _compare_dict(old: Dict, new: Dict, keys: List[str]) -> bool:
         return False
 
     return True
+
+
+def _check_constraints(active: List[Dict], desired: List[Dict]) -> bool:
+    """Function for checking if the constraints match
+
+    :param active:
+    :param desired:
+    :return: True if inconsistent, False if consistent
+    """
+
+    if not desired and len(active):
+        return True
+    elif len(active) != len(desired):
+        return True
+    elif not desired:
+        return False
+
+    active_sorted = sorted(active, key=lambda x: x['type'])
+    desired_sorted = sorted(desired, key=lambda x: x['type'])
+
+    for a, d in zip(active_sorted, desired_sorted):
+        if not _compare_dict(a, d, ['type']):
+            return True
+
+    return False
