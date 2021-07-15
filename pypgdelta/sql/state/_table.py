@@ -16,6 +16,7 @@ def get_sql_tables_and_views(connection: psycopg2.extensions.connection) -> List
         query = """SELECT t.table_schema,
                           t.table_name,
                           t.table_type,
+                          c.character_maximum_length,
                           c.column_name,
                           c.data_type,
                           c.is_nullable
@@ -87,6 +88,7 @@ def _generate_column_definitions(column_definition: psycopg2.extras.RealDictRow)
     column_information = OrderedDict()
     column_setup[column_definition['column_name']] = column_information
     column_information['data_type'] = column_definition['data_type']
+    column_information['character_maximum_length'] = column_definition['character_maximum_length']
     column_information['nullable'] = column_definition['is_nullable'] == 'YES'
 
     return column_setup
