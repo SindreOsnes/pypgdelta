@@ -27,7 +27,7 @@ def create_column_statement(name: str,
 
     col_str = f"{name} {data_type}"
     if pk:
-        col_str += " PRIMARY KEY,\n"
+        col_str += " PRIMARY KEY"
         return col_str
 
     if not nullable:
