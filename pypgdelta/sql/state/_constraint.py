@@ -13,11 +13,11 @@ def get_constraints_sql(connection: psycopg2.extensions.connection) -> List[psyc
     :rtype: List[psycopg2.extras.RealDictRow]
     """
     with connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
-        query = """SELECT con.conname     AS name,
-                          con.contype     AS type,
-                          rel.relname     AS schema,
-                          nsp.nspname     AS table,
-                          ccu.column_name AS column
+        query = """SELECT con.conname      AS name,
+                          con.contype      AS type,
+                          ccu.table_schema AS schema,
+                          ccu.table_name   AS table,
+                          ccu.column_name  AS column
                    FROM pg_catalog.pg_constraint con
                             INNER JOIN pg_catalog.pg_class rel
                                        ON rel.oid = con.conrelid
