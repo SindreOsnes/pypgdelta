@@ -43,6 +43,17 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
             # Add the table definition if missing
             existing_definition = old_configuration.get(schema_name, {}).get('tables', {}).get(table_name)
             if not existing_definition:
+
+                # Get the constraints for the new table
+                constraints_delta = compare_constraints(
+                    old_constraints={},
+                    new_constraints=table_config.get('constraints')
+                )
+
+                # Add the constraints
+                if constraints_delta:
+                    table_baseline['constraints'] = constraints_delta
+
                 table_baseline['column_definitions'] = column_definitions
                 delta['tables']['new'].append(table_baseline)
 
