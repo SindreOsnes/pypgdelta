@@ -81,11 +81,7 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
                                     'data_type_stmt'
                                 ]
                             )
-                            or _check_constraints(
-                        existing_columns.get(k, {}).get('constraints', []),
-                        v.get('constraints', [])
-                    )
-                    )
+                        )
                     ]
                 )
 
@@ -104,6 +100,16 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
                 )
                 if delete_columns:
                     table_baseline['delete_column_definitions'] = delete_columns
+                    alter = True
+
+                # Check constraints
+                constraints_delta = compare_constraints(
+                    old_constraints=existing_definition.get('constraints', {}),
+                    new_constraints=table_config.get('constraints')
+                )
+
+                if constraints_delta:
+                    table_baseline['constraints'] = constraints_delta
                     alter = True
 
                 # Set the alter statements if needed
@@ -172,12 +178,7 @@ def compare_constraints(old_constraints: Dict, new_constraints: Dict) -> Dict:
     new_pk = new_constraints.get('primary_key', {})
 
     # Set the change object
-    pk_change = OrderedDict(
-        [
-            ('drop_pk', OrderedDict()),
-            ('new_pk', OrderedDict()),
-        ]
-    )
+    pk_change = OrderedDict()
 
     # Calculate the delta
     if old_pk and not new_pk:
