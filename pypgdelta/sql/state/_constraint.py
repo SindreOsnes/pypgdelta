@@ -60,7 +60,12 @@ def get_constraints_dict(connection: psycopg2.extensions.connection) -> Dict:
         if constraint['table'] not in schema_information['tables']:
             schema_information['tables'][constraint['table']] = OrderedDict(
                 [
-                    ('columns', OrderedDict())
+                    ('columns', OrderedDict()),
+                    ('constraints', OrderedDict(
+                        [
+                            ('primary_key', OrderedDict())
+                        ]
+                    )),
                 ]
             )
 
@@ -82,5 +87,32 @@ def get_constraints_dict(connection: psycopg2.extensions.connection) -> Dict:
                 'type': constraint['type']
             }
         )
+
+        # Get the constraint configuration
+        if 'constraints' not in table_information:
+            table_constraints = OrderedDict(
+                [
+                    ('primary_key', OrderedDict())
+                ]
+            )
+
+            # Get the primary key information
+            pk_information = table_constraints['primary_key']
+        else:
+            table_constraints = table_information['constraints']
+            if 'primary_key' not in table_constraints:
+                pk_information = OrderedDict()
+                table_constraints['primary_key'] = pk_information
+            else:
+                pk_information = table_constraints['primary_key']
+
+        # Set the primary key
+        if constraint['type'] == 'p':
+            pk_information['name'] = constraint['name']
+
+            # Verify column information for primary keys
+            pk_information['columns'] = pk_information.get('columns', [])
+            if constraint['column'] not in pk_information['columns']:
+                pk_information['columns'].append(constraint['column'])
 
     return configuration
