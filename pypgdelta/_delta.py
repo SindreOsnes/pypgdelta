@@ -157,6 +157,14 @@ def get_delta_statement(old_configuration: Dict, new_configuration: Dict) -> str
             )
         )
 
+        # Add constraints
+        constraint_statements = create_constraint_statements(
+            schema_name=table['schema_name'],
+            table_name=table['table_name'],
+            constraints=table['constraints'],
+        )
+        statement_list.extend(constraint_statements['create'])
+
     # Add the alter table statements
     for table in delta['tables']['alter']:
         constraint_statements = create_constraint_statements(
