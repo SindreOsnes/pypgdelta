@@ -157,6 +157,20 @@ def get_delta_statement(old_configuration: Dict, new_configuration: Dict) -> str
     return ''
 
 
+def compare_constraints(schema_name: str, table_name: str, old_constraints: Dict, new_constraints: Dict) -> Dict:
+    """Function to figure out which constraints are new and or deleted
+
+    :param str schema_name: The schema that the table belongs to
+    :param str table_name: The table name in question
+    :param Dict old_constraints: The existing configuration
+    :param Dict new_constraints: The new configuration
+
+    :return: The altered constraints
+    :rtype: Dict
+    """
+    pass
+
+
 def _compare_dict(old: Dict, new: Dict, keys: List[str]) -> bool:
     """Function for comparing a flat dictionary across specified keys
 
