@@ -82,10 +82,10 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
                                 ]
                             )
                             or _check_constraints(
-                                existing_columns.get(k, {}).get('constraints', []),
-                                v.get('constraints', [])
-                            )
-                        )
+                        existing_columns.get(k, {}).get('constraints', []),
+                        v.get('constraints', [])
+                    )
+                    )
                     ]
                 )
 
@@ -168,7 +168,33 @@ def compare_constraints(schema_name: str, table_name: str, old_constraints: Dict
     :return: The altered constraints
     :rtype: Dict
     """
-    pass
+
+    # Set the pks
+    old_pk = old_constraints.get('primary_key', {})
+    new_pk = new_constraints.get('primary_key', {})
+
+    # Set the change object
+    pk_change = OrderedDict(
+        [
+            ('drop_pk', OrderedDict()),
+            ('new_pk', OrderedDict()),
+        ]
+    )
+
+    # Calculate the delta
+    if old_pk and not new_pk:
+        pk_change['drop_pk'] = old_pk
+    elif new_pk and not old_pk:
+        pk_change['new_pk'] = new_pk
+    else:
+        if new_pk['name'] != old_pk['name']:
+            pk_change['drop_pk'] = old_pk
+            pk_change['new_pk'] = new_pk
+        elif new_pk['name'] != old_pk['name']:
+            pk_change['drop_pk'] = old_pk
+            pk_change['new_pk'] = new_pk
+
+    return pk_change
 
 
 def _compare_dict(old: Dict, new: Dict, keys: List[str]) -> bool:
