@@ -161,7 +161,7 @@ def get_delta_statement(old_configuration: Dict, new_configuration: Dict) -> str
         constraint_statements = create_constraint_statements(
             schema_name=table['schema_name'],
             table_name=table['table_name'],
-            constraints=table['constraints'],
+            constraints=table.get('constraints', {}),
         )
         statement_list.extend(constraint_statements['create'])
 
@@ -170,7 +170,7 @@ def get_delta_statement(old_configuration: Dict, new_configuration: Dict) -> str
         constraint_statements = create_constraint_statements(
             schema_name=table['schema_name'],
             table_name=table['table_name'],
-            constraints=table['constraints'],
+            constraints=table.get('constraints', {}),
         )
 
         # Drop the constraints
@@ -214,7 +214,9 @@ def compare_constraints(old_constraints: Dict, new_constraints: Dict) -> Dict:
     pk_change = OrderedDict()
 
     # Calculate the delta
-    if old_pk and not new_pk:
+    if not new_pk and not old_pk:
+        return pk_change
+    elif old_pk and not new_pk:
         pk_change['drop_pk'] = old_pk
     elif new_pk and not old_pk:
         pk_change['new_pk'] = new_pk
