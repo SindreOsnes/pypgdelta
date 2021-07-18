@@ -27,8 +27,8 @@ def create_table_config(statements: Iterable[Dict], baseline: Union[Dict, None] 
     for statement in table_statements:
 
         # Get the properties
-        table_statement =statement['stmt']['CreateStmt']
-        relation =table_statement['relation']
+        table_statement = statement['stmt']['CreateStmt']
+        relation = table_statement['relation']
         schema_name = relation['schemaname']
         table_name = relation['relname']
 
@@ -60,5 +60,28 @@ def create_table_config(statements: Iterable[Dict], baseline: Union[Dict, None] 
             if 'ColumnDef' in element:
                 column_configuration = create_column_config(element['ColumnDef'])
                 column_configurations.update(column_configuration)
+
+        # Constraints
+        constraint_configurations = OrderedDict(
+            [
+                ('primary_key', OrderedDict())
+            ]
+        )
+        pk_config = constraint_configurations['primary_key']
+        table_configuration['constraints'] = constraint_configurations
+
+        # Get the primary key constraints
+        for k, v in column_configurations.items():
+            for constraint in v.get('constraints', []):
+                if constraint['type'] == 'p':
+                    if constraint.get('name', None) is None:
+                        constraint['name'] = f"{table_name}_pkey"
+
+                    # Set the properties for the primary key
+                    pk_config['name'] = constraint['name']
+                    if 'columns' not in pk_config:
+                        pk_config['columns'] = []
+                    if k not in pk_config['columns']:
+                        pk_config['columns'].append(k)
 
     return baseline

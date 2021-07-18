@@ -11,7 +11,7 @@ def create_column_statement(name: str,
     :param str name: The name of the columns
     :param str data_type: The data type in question
     :param bool nullable: Whether the column is nullable
-    :param Union[List, None] nullable: List of constraints
+    :param Union[List, None] constraints: List of constraints
     :param kwargs:
 
     :return: The column sql definition
@@ -26,9 +26,9 @@ def create_column_statement(name: str,
                 nullable = False
 
     col_str = f"{name} {data_type}"
-    if pk:
-        col_str += " PRIMARY KEY"
-        return col_str
+    # if pk:
+    #     col_str += " PRIMARY KEY"
+    #     return col_str
 
     if not nullable:
         col_str += ' NOT NULL'
@@ -46,7 +46,7 @@ def alter_column_statement(name: str,
     :param str name: The name of the columns
     :param str data_type: The data type in question
     :param bool nullable: Whether the column is nullable
-    :param Union[List, None] nullable: List of constraints
+    :param Union[List, None] constraints: List of constraints
     :param kwargs:
 
     :return: The column sql definition
