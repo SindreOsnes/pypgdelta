@@ -3,6 +3,7 @@ from copy import deepcopy
 from typing import Dict, List
 
 from .sql import statements
+from .sql.statements._constraint import create_constraint_statements
 
 
 def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
@@ -71,17 +72,17 @@ def get_delta(old_configuration: Dict, new_configuration: Dict) -> Dict:
                         for k, v
                         in column_definitions.items()
                         if k in existing_columns and (
-                            not _compare_dict(
-                                v,
-                                existing_columns.get(k, {}),
-                                [
-                                    'data_type',
-                                    'character_maximum_length',
-                                    'nullable',
-                                    'data_type_stmt'
-                                ]
-                            )
+                        not _compare_dict(
+                            v,
+                            existing_columns.get(k, {}),
+                            [
+                                'data_type',
+                                'character_maximum_length',
+                                'nullable',
+                                'data_type_stmt'
+                            ]
                         )
+                    )
                     ]
                 )
 
@@ -137,7 +138,7 @@ def get_delta_statement(old_configuration: Dict, new_configuration: Dict) -> str
         statement_list.append(statements.create_schema(schema))
 
     for table in delta['tables']['new']:
-        statement_list.append(
+        statement_list.extend(
             statements.create_table(
                 schema_name=table['schema_name'],
                 table_name=table['table_name'],
@@ -147,7 +148,17 @@ def get_delta_statement(old_configuration: Dict, new_configuration: Dict) -> str
 
     # Add the alter table statements
     for table in delta['tables']['alter']:
-        statement_list.append(
+        constraint_statements = create_constraint_statements(
+            schema_name=table['schema_name'],
+            table_name=table['table_name'],
+            constraints=table['constraints'],
+        )
+
+        # Drop the constraints
+        statement_list.extend(constraint_statements['drop'])
+
+        # Alter the columns
+        statement_list.extend(
             statements.alter_table(
                 schema_name=table['schema_name'],
                 table_name=table['table_name'],
@@ -156,6 +167,9 @@ def get_delta_statement(old_configuration: Dict, new_configuration: Dict) -> str
                 delete_column_definitions=table.get('delete_column_definitions', {})
             )
         )
+
+        # Add the create constraint statements
+        statement_list.extend(constraint_statements['create'])
 
     if statement_list:
         return ';\n\n'.join(statement_list) + ';'
@@ -210,6 +224,7 @@ def _compare_dict(old: Dict, new: Dict, keys: List[str]) -> bool:
     try:
         for key in keys:
             if new[key] != old[key]:
+                print(key)
                 return False
     except:
         return False

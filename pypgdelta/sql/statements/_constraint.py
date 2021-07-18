@@ -28,8 +28,8 @@ def create_constraint_statements(schema_name: str,
         statement = f"ALTER TABLE {schema_name}.{table_name} ADD CONSTRAINT {constraints['new_pk']['name']}"
         statement += f" PRIMARY KEY({','.join(constraints['new_pk']['columns'])})"
         statements['create'].append(statement)
-    if 'old_pk' in constraints:
-        statement = f"ALTER TABLE {schema_name}.{table_name} DROP CONSTRAINT {constraints['new_pk']['name']}"
+    if 'drop_pk' in constraints:
+        statement = f"ALTER TABLE {schema_name}.{table_name} DROP CONSTRAINT IF EXISTS {constraints['drop_pk']['name']} CASCADE"
         statements['drop'].append(statement)
 
     return statements

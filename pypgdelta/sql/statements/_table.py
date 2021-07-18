@@ -1,9 +1,9 @@
-from typing import Dict
+from typing import Dict, List
 
 from ._column import alter_column_statement, create_column_statement
 
 
-def create_table(schema_name: str, table_name: str, column_definitions: Dict) -> str:
+def create_table(schema_name: str, table_name: str, column_definitions: Dict) -> List[str]:
     """Function for generating a create table statement
 
     :param str schema_name: The name of the schema that the table belongs to
@@ -11,7 +11,7 @@ def create_table(schema_name: str, table_name: str, column_definitions: Dict) ->
     :param Dict column_definitions: The column definitions
 
     :return: The sql query
-    :rtype: str
+    :rtype: List[str]
     """
 
     # create the columns
@@ -29,13 +29,13 @@ def create_table(schema_name: str, table_name: str, column_definitions: Dict) ->
     # Create the table statement based on the column
     table_statement = f"CREATE TABLE {schema_name}.{table_name} (\n\t{column_statements}\n)"
 
-    return table_statement
+    return [table_statement]
 
 
 def alter_table(schema_name: str, table_name: str,
                 new_column_definitions: Dict,
                 alter_column_definitions: Dict,
-                delete_column_definitions: Dict) -> str:
+                delete_column_definitions: Dict) -> List[str]:
     """Function for generating an alter table statement
 
     :param str schema_name: The name of the schema that the table belongs to
@@ -45,7 +45,7 @@ def alter_table(schema_name: str, table_name: str,
     :param Dict delete_column_definitions: The column definitions to be deleted
 
     :return: The sql query
-    :rtype: str
+    :rtype: List[str]
     """
 
     # create the columns
@@ -103,4 +103,8 @@ def alter_table(schema_name: str, table_name: str,
             table_statement += ';\n\n'
 
         table_statement += f"ALTER TABLE {schema_name}.{table_name} \n{delete_column_statements}"
-    return table_statement
+
+    # Return the statement as a list
+    if table_statement:
+        return [table_statement]
+    return []

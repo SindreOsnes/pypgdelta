@@ -100,6 +100,9 @@ def _generate_column_definitions(column_definition: psycopg2.extras.RealDictRow)
             column_information['data_type_stmt'] = f"varchar({column_information['character_maximum_length']})"
         else:
             column_information['data_type_stmt'] = f"varchar"
+    elif column_information['data_type'] == 'uuid':
+        column_information['data_type_stmt'] = "uuid"
+
     else:
         column_information['data_type_stmt'] = None
 
