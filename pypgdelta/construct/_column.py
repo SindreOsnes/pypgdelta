@@ -57,6 +57,7 @@ def create_column_config(column_def: Dict) -> Dict:
     column_config['constraints'] = []
     for constraint in column_def.get('constraints', []):
         if constraint.get('Constraint', {}).get('contype', None) == "CONSTR_PRIMARY":
+            column_config['nullable'] = False
             column_config['constraints'].append(
                 {
                     'type': 'p'
